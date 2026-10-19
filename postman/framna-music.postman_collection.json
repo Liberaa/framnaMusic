@@ -1,0 +1,162 @@
+{
+  "info": {
+    "name": "Framna Music",
+    "description": "Anrop mot backend som körs lokalt. Starta servern med `npm run dev` i backend-mappen först.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "newEmployeeId", "value": "3" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test(\"Servern svarar\", () => pm.response.to.have.status(200));"]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/health", "host": ["{{baseUrl}}"], "path": ["health"] }
+      }
+    },
+    {
+      "name": "Lista anställda",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test(\"Får en lista\", () => pm.response.to.have.status(200));"]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/employees", "host": ["{{baseUrl}}"], "path": ["employees"] }
+      }
+    },
+    {
+      "name": "Incheckning – känt kort",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test(\"Anna checkas in\", () => pm.response.to.have.status(200));"]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tagId\": \"04:A1:B2:C3\"\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": { "raw": "{{baseUrl}}/checkin", "host": ["{{baseUrl}}"], "path": ["checkin"] }
+      }
+    },
+    {
+      "name": "Incheckning – okänt kort",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test(\"Okänt kort ger 404\", () => pm.response.to.have.status(404));"]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tagId\": \"FF:FF:FF:FF\"\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": { "raw": "{{baseUrl}}/checkin", "host": ["{{baseUrl}}"], "path": ["checkin"] }
+      }
+    },
+    {
+      "name": "Länka nytt kort",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Kortet länkas\", () => pm.response.to.have.status(201));",
+              "pm.collectionVariables.set(\"newEmployeeId\", pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Ny Anställd\",\n  \"tagId\": \"04:11:22:33\",\n  \"song\": \"ABBA - Dancing Queen\"\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": { "raw": "{{baseUrl}}/employees", "host": ["{{baseUrl}}"], "path": ["employees"] }
+      }
+    },
+    {
+      "name": "Byt låt",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test(\"Låten byts\", () => pm.response.to.have.status(200));"]
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"song\": \"Avicii - Levels\"\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/employees/{{newEmployeeId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["employees", "{{newEmployeeId}}"]
+        }
+      }
+    },
+    {
+      "name": "Incheckning – nya kortet",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": ["pm.test(\"Nya kortet checkas in\", () => pm.response.to.have.status(200));"]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tagId\": \"04:11:22:33\"\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": { "raw": "{{baseUrl}}/checkin", "host": ["{{baseUrl}}"], "path": ["checkin"] }
+      }
+    }
+  ]
+}
