@@ -1,3 +1,4 @@
+import path from "node:path";
 import express, { type NextFunction, type Request, type Response } from "express";
 import { addEmployee, findByTagId, getAllEmployees, updateSong } from "./employees";
 
@@ -6,6 +7,9 @@ const PORT = Number(process.env.PORT) || 3000;
 
 // Gör att servern kan läsa JSON i request-bodyn
 app.use(express.json());
+
+// Visar hemsidan (filerna i backend/public) på http://localhost:3000
+app.use(express.static(path.join(__dirname, "..", "public")));
 
 function isText(value: unknown): value is string {
   return typeof value === "string" && value.trim() !== "";

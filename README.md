@@ -16,6 +16,10 @@ npm run dev
 
 Servern körs på `http://localhost:3000` och startar om automatiskt när du sparar en fil.
 
+## Hemsidan
+
+Öppna `http://localhost:3000` i webbläsaren. Där kan du länka kort, byta låt och testa en incheckning. Hemsidan ligger i `backend/public/` och är vanlig HTML, CSS och JavaScript, så den behöver inget byggsteg.
+
 > Just nu sparas datan i minnet. Allt du lägger till försvinner när servern startas om.
 
 ## API
