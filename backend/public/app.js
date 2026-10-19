@@ -1,10 +1,12 @@
 const linkForm = document.querySelector("#link-form");
 const linkMessage = document.querySelector("#link-message");
 const employeeList = document.querySelector("#employee-list");
+const employeeCount = document.querySelector("#employee-count");
 const listMessage = document.querySelector("#list-message");
 const rowTemplate = document.querySelector("#employee-row");
 const checkinForm = document.querySelector("#checkin-form");
 const checkinMessage = document.querySelector("#checkin-message");
+const nowPlaying = document.querySelector("#now-playing");
 
 // Skickar ett anrop till API:et. Kastar ett fel med serverns felmeddelande om något går fel.
 async function api(method, path, body) {
@@ -26,19 +28,56 @@ function showMessage(element, text, isError) {
   element.className = isError ? "message error" : "message success";
 }
 
-// Skapar en tabellrad från mallen i index.html
+// "Anna Svensson" -> "AS"
+function initials(name) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0].toUpperCase())
+    .join("");
+}
+
+// Samma namn ger alltid samma färg (en kulör mellan 0 och 359)
+function hueFor(name) {
+  let hash = 0;
+  for (const char of name) {
+    hash = (hash * 31 + char.charCodeAt(0)) % 360;
+  }
+  return hash;
+}
+
+function fillAvatar(element, name) {
+  element.textContent = initials(name);
+  element.style.setProperty("--hue", hueFor(name));
+}
+
+// Visar "Sparat ✓" på knappen en kort stund
+function flashSaved(button) {
+  button.textContent = "Sparat ✓";
+  button.classList.add("saved");
+  setTimeout(() => {
+    button.textContent = "Spara";
+    button.classList.remove("saved");
+  }, 1500);
+}
+
+// Skapar en rad i listan från mallen i index.html
 function createRow(employee) {
   const row = rowTemplate.content.cloneNode(true);
-  const songInput = row.querySelector("input");
+  const songForm = row.querySelector(".song-edit");
 
+  fillAvatar(row.querySelector(".avatar"), employee.name);
   row.querySelector(".name").textContent = employee.name;
   row.querySelector(".tag").textContent = employee.tagId;
-  songInput.value = employee.song;
+  songForm.song.value = employee.song;
 
-  row.querySelector("button").addEventListener("click", async () => {
+  songForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
     try {
-      const updated = await api("PATCH", `/employees/${employee.id}`, { song: songInput.value });
-      showMessage(listMessage, `${updated.name} har nu låten ${updated.song}`, false);
+      await api("PATCH", `/employees/${employee.id}`, { song: songForm.song.value });
+      listMessage.textContent = "";
+      flashSaved(songForm.querySelector("button"));
     } catch (error) {
       showMessage(listMessage, error.message, true);
     }
@@ -50,10 +89,32 @@ function createRow(employee) {
 async function loadEmployees() {
   try {
     const employees = await api("GET", "/employees");
+    employeeCount.textContent = employees.length;
+
+    if (employees.length === 0) {
+      const empty = document.createElement("li");
+      empty.className = "empty";
+      empty.textContent = "Inga kort länkade än.";
+      employeeList.replaceChildren(empty);
+      return;
+    }
+
     employeeList.replaceChildren(...employees.map(createRow));
   } catch (error) {
     showMessage(listMessage, error.message, true);
   }
+}
+
+function showNowPlaying(result) {
+  fillAvatar(nowPlaying.querySelector(".avatar"), result.name);
+  nowPlaying.querySelector(".welcome").textContent = result.message;
+  nowPlaying.querySelector(".now-playing-song").textContent = result.song;
+
+  // Starta om animationen varje gång någon checkar in
+  nowPlaying.hidden = false;
+  nowPlaying.classList.remove("pop");
+  void nowPlaying.offsetWidth;
+  nowPlaying.classList.add("pop");
 }
 
 linkForm.addEventListener("submit", async (event) => {
@@ -76,8 +137,10 @@ checkinForm.addEventListener("submit", async (event) => {
 
   try {
     const result = await api("POST", "/checkin", { tagId });
-    showMessage(checkinMessage, `${result.message} Spelar: ${result.song}`, false);
+    checkinMessage.textContent = "";
+    showNowPlaying(result);
   } catch (error) {
+    nowPlaying.hidden = true;
     showMessage(checkinMessage, error.message, true);
   }
 });

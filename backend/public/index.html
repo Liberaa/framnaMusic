@@ -3,63 +3,93 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d0e1a">
   <title>Framna Music</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main>
-    <header>
-      <h1>Framna Music</h1>
-      <p>Blippa ditt kort när du kommer in, så spelas din låt.</p>
+    <header class="hero">
+      <div class="brand">
+        <span class="bars" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        Framna Music
+      </div>
+      <h1>Starta dagen med <span class="gradient-text">din låt</span></h1>
+      <p>Blippa ditt kort när du kommer in, så spelas din låt i högtalaren.</p>
     </header>
 
-    <section>
-      <h2>Länka ett kort</h2>
-      <form id="link-form">
-        <label>Namn <input name="name" required></label>
-        <label>Kort-id <input name="tagId" placeholder="04:11:22:33" required></label>
-        <label>Låt <input name="song" placeholder="ABBA - Dancing Queen" required></label>
-        <button type="submit">Länka kort</button>
-      </form>
-      <p id="link-message" class="message" role="status"></p>
-    </section>
+    <div class="layout">
+      <div class="stack">
+        <section class="card">
+          <h2>Testa incheckning</h2>
+          <p class="hint">Låtsas att du blippar ett kort.</p>
+          <form id="checkin-form" class="row-form">
+            <label class="field">
+              <span>Kort-id</span>
+              <input name="tagId" placeholder="04:A1:B2:C3" autocomplete="off" required>
+            </label>
+            <button type="submit">Blippa</button>
+          </form>
 
-    <section>
-      <h2>Länkade kort</h2>
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr><th>Namn</th><th>Kort-id</th><th>Låt</th></tr>
-          </thead>
-          <tbody id="employee-list"></tbody>
-        </table>
+          <!-- Visas när någon checkar in -->
+          <div id="now-playing" class="now-playing" hidden>
+            <div class="avatar"></div>
+            <div class="now-playing-text">
+              <p class="welcome"></p>
+              <p class="now-playing-song"></p>
+            </div>
+            <span class="bars" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+          </div>
+          <p id="checkin-message" class="message" role="status"></p>
+        </section>
+
+        <section class="card">
+          <h2>Länka ett kort</h2>
+          <p class="hint">Koppla ett NFC-kort till en person och en låt.</p>
+          <form id="link-form" class="stack-form">
+            <label class="field">
+              <span>Namn</span>
+              <input name="name" autocomplete="off" required>
+            </label>
+            <label class="field">
+              <span>Kort-id</span>
+              <input name="tagId" placeholder="04:11:22:33" autocomplete="off" required>
+            </label>
+            <label class="field">
+              <span>Låt</span>
+              <input name="song" placeholder="ABBA - Dancing Queen" autocomplete="off" required>
+            </label>
+            <button type="submit">Länka kort</button>
+          </form>
+          <p id="link-message" class="message" role="status"></p>
+        </section>
       </div>
-      <p id="list-message" class="message" role="status"></p>
-    </section>
 
-    <section>
-      <h2>Testa incheckning</h2>
-      <p>Låtsas att du blippar ett kort.</p>
-      <form id="checkin-form">
-        <label>Kort-id <input name="tagId" placeholder="04:A1:B2:C3" required></label>
-        <button type="submit">Checka in</button>
-      </form>
-      <p id="checkin-message" class="message" role="status"></p>
-    </section>
+      <section class="card">
+        <h2>Länkade kort <span id="employee-count" class="count"></span></h2>
+        <p class="hint">Ändra låten och tryck på Spara.</p>
+        <ul id="employee-list" class="employee-list"></ul>
+        <p id="list-message" class="message" role="status"></p>
+      </section>
+    </div>
   </main>
 
-  <!-- Mall för en rad i tabellen, fylls i av app.js -->
+  <!-- Mall för en anställd i listan, fylls i av app.js -->
   <template id="employee-row">
-    <tr>
-      <td class="name"></td>
-      <td class="tag"></td>
-      <td>
-        <div class="song-edit">
-          <input aria-label="Låt">
-          <button type="button">Spara</button>
-        </div>
-      </td>
-    </tr>
+    <li class="employee">
+      <div class="avatar"></div>
+      <div class="employee-info">
+        <p class="name"></p>
+        <p class="tag"></p>
+      </div>
+      <form class="song-edit">
+        <input name="song" aria-label="Låt" required>
+        <button type="submit" class="secondary">Spara</button>
+      </form>
+    </li>
   </template>
 
   <script src="app.js"></script>

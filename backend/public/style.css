@@ -1,11 +1,18 @@
 :root {
-  --bg: #f5f5f7;
-  --card: #ffffff;
-  --text: #1d1d1f;
-  --muted: #6e6e73;
-  --border: #d2d2d7;
-  --accent: #15803d;
-  --error: #c0262d;
+  color-scheme: dark;
+  --bg: #0d0e1a;
+  --card: rgba(255, 255, 255, 0.04);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --input-bg: rgba(255, 255, 255, 0.06);
+  --input-border: rgba(255, 255, 255, 0.12);
+  --text: #f4f4f8;
+  --muted: #a3a6bd;
+  --gradient: linear-gradient(135deg, #7c3aed, #db2777);
+  --gradient-light: linear-gradient(135deg, #a78bfa, #f472b6);
+  --focus: #a78bfa;
+  --success: #34d399;
+  --error: #f87171;
+  --radius: 16px;
 }
 
 * {
@@ -14,125 +21,396 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  background: var(--bg);
-  color: var(--text);
+  min-height: 100vh;
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   line-height: 1.5;
+  color: var(--text);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(60rem 30rem at 10% -10%, rgba(124, 58, 237, 0.35), transparent 60%),
+    radial-gradient(50rem 30rem at 95% 0%, rgba(219, 39, 119, 0.22), transparent 60%);
+  background-repeat: no-repeat;
 }
 
 main {
-  max-width: 760px;
+  max-width: 1080px;
   margin: 0 auto;
-  padding: 32px 16px;
+  padding: 48px 16px 64px;
 }
 
-h1 {
-  margin: 0 0 4px;
+p {
+  margin: 0;
 }
 
-h2 {
-  margin: 0 0 12px;
-  font-size: 1.1rem;
+/* ---------- Rubrik ---------- */
+
+.hero {
+  margin-bottom: 36px;
 }
 
-header p,
-section > p:not(.message) {
-  margin-top: 0;
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
   color: var(--muted);
 }
 
-section {
-  margin-bottom: 20px;
-  padding: 20px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+h1 {
+  margin: 14px 0 10px;
+  font-size: clamp(2.1rem, 6vw, 3.4rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
 }
 
-form {
+.gradient-text {
+  white-space: nowrap;
+  color: transparent;
+  background: var(--gradient-light);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.hero p {
+  max-width: 34rem;
+  font-size: 1.1rem;
+  color: var(--muted);
+}
+
+/* ---------- Layout och kort ---------- */
+
+/* minmax(0, ...) hindrar långa texter från att göra kolumnerna bredare än skärmen */
+.layout,
+.stack {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+}
+
+@media (min-width: 900px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    align-items: start;
+  }
+}
+
+.card {
+  padding: 24px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(8px);
+}
+
+h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 4px;
+  font-size: 1.15rem;
+}
+
+.hint {
+  margin-bottom: 18px;
+  color: var(--muted);
+}
+
+.count {
+  padding: 1px 10px;
+  font-size: 0.8rem;
+  background: var(--input-bg);
+  border-radius: 999px;
+}
+
+.count:empty {
+  display: none;
+}
+
+/* ---------- Formulär ---------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.stack-form {
+  display: grid;
+  gap: 14px;
+}
+
+.stack-form button {
+  justify-self: start;
+}
+
+.row-form {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
   gap: 12px;
 }
 
-label {
-  display: flex;
-  flex: 1 1 160px;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 0.9rem;
+.row-form .field {
+  flex: 1 1 180px;
 }
 
 input {
-  padding: 8px 10px;
+  width: 100%;
+  padding: 11px 14px;
   font: inherit;
   font-size: 1rem;
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 10px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+input::placeholder {
+  color: rgba(163, 166, 189, 0.55);
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--focus);
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.25);
 }
 
 button {
-  padding: 8px 16px;
+  padding: 11px 22px;
   font: inherit;
+  font-weight: 700;
   color: #ffffff;
-  background: var(--accent);
-  border: none;
-  border-radius: 8px;
+  background: var(--gradient);
+  border: 1px solid transparent;
+  border-radius: 10px;
   cursor: pointer;
+  transition: transform 0.1s, filter 0.15s, background 0.15s;
 }
 
 button:hover {
-  filter: brightness(0.9);
+  filter: brightness(1.12);
 }
 
-.table-wrapper {
-  overflow-x: auto;
+button:active {
+  transform: scale(0.97);
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
+button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
-th,
-td {
-  padding: 8px;
-  text-align: left;
-  border-bottom: 1px solid var(--border);
+button.secondary {
+  color: var(--text);
+  background: var(--input-bg);
+  border-color: var(--input-border);
 }
 
-th {
-  font-size: 0.85rem;
-  color: var(--muted);
+button.secondary:hover {
+  filter: none;
+  background: rgba(255, 255, 255, 0.12);
 }
 
-.tag {
-  font-family: ui-monospace, Consolas, monospace;
-  white-space: nowrap;
-}
-
-/* På smala skärmar hamnar Spara-knappen under låtfältet */
-.song-edit {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.song-edit input {
-  flex: 1 1 120px;
-  width: 100%;
+button.saved {
+  color: #052e1f;
+  background: var(--success);
 }
 
 .message {
-  min-height: 1.5em;
-  margin: 12px 0 0;
+  margin-top: 14px;
+  font-weight: 600;
+}
+
+.message:empty {
+  display: none;
 }
 
 .message.success {
-  color: var(--accent);
+  color: var(--success);
 }
 
 .message.error {
   color: var(--error);
+}
+
+/* ---------- Initialer ---------- */
+
+/* --hue sätts per person i app.js så att alla får en egen färg */
+.avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  font-weight: 800;
+  color: hsl(var(--hue, 270) 90% 85%);
+  background: hsl(var(--hue, 270) 55% 28%);
+  border: 1px solid hsl(var(--hue, 270) 60% 45% / 0.6);
+  border-radius: 50%;
+}
+
+/* ---------- Lista med länkade kort ---------- */
+
+.employee-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.employee {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 14px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  transition: border-color 0.15s;
+}
+
+.employee:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.employee-info {
+  flex: 1 1 110px;
+  min-width: 0;
+}
+
+.name {
+  font-weight: 700;
+}
+
+.tag {
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* Låtfältet får det mesta av utrymmet i raden */
+.song-edit {
+  display: flex;
+  flex: 3 1 280px;
+  gap: 8px;
+}
+
+.song-edit input {
+  padding: 9px 12px;
+}
+
+.song-edit button {
+  min-width: 5.75rem;
+  padding: 9px 12px;
+}
+
+.empty {
+  padding: 12px;
+  color: var(--muted);
+}
+
+/* ---------- Spelas nu ---------- */
+
+.now-playing {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 18px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.25), rgba(219, 39, 119, 0.18));
+  border: 1px solid rgba(244, 114, 182, 0.3);
+  border-radius: 14px;
+}
+
+.now-playing[hidden] {
+  display: none;
+}
+
+.now-playing.pop {
+  animation: pop-in 0.35s ease-out;
+}
+
+.now-playing .avatar {
+  width: 52px;
+  height: 52px;
+  font-size: 1.1rem;
+}
+
+.now-playing-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.welcome {
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.now-playing-song {
+  overflow: hidden;
+  color: var(--muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.now-playing .bars {
+  height: 28px;
+}
+
+.now-playing .bars span {
+  width: 5px;
+}
+
+/* ---------- Equalizer-staplar ---------- */
+
+.bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 18px;
+}
+
+.bars span {
+  width: 4px;
+  height: 100%;
+  background: var(--gradient-light);
+  border-radius: 2px;
+  transform-origin: bottom;
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.bars span:nth-child(2) { animation-delay: -0.4s; }
+.bars span:nth-child(3) { animation-delay: -0.2s; }
+.bars span:nth-child(4) { animation-delay: -0.6s; }
+
+/* Staplarna i loggan står still */
+.brand .bars span { animation: none; }
+.brand .bars span:nth-child(1) { transform: scaleY(0.5); }
+.brand .bars span:nth-child(2) { transform: scaleY(1); }
+.brand .bars span:nth-child(3) { transform: scaleY(0.7); }
+.brand .bars span:nth-child(4) { transform: scaleY(0.35); }
+
+@keyframes bounce {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bars span,
+  .now-playing.pop {
+    animation: none;
+  }
 }

@@ -76,7 +76,7 @@ app.post("/checkin", (req, res) => {
   }
 
   console.log(`${employee.name} checkade in, spelar: ${employee.song}`);
-  res.json({ message: `Välkommen ${employee.name}!`, song: employee.song });
+  res.json({ message: `Välkommen ${employee.name}!`, name: employee.name, song: employee.song });
 });
 
 // Svarar med JSON istället för en HTML-sida om bodyn inte är giltig JSON
